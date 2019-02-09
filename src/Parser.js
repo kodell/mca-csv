@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Papa from 'papaparse';
+
+import Export from './Export'
 
 export default function Parser({ source, cancel }) {
   if (!(source instanceof File)) {
@@ -8,17 +10,22 @@ export default function Parser({ source, cancel }) {
 
   // Kick off the source download with Papa
   const [rows, setRows] = useState(0);
+  const [processed, setProcessed] = useState(null);
+
   useEffect(() => {
+    let rows = 0;
     Papa.parse(source, {
-      download: true,
-      step: function (row) {
-        console.log(row)
-        setRows(rows + 1)
+      header: true,
+      complete: function (results) {
+        setProcessed(results)
       }
     })
   }, [source])
 
   return (
-    <div>Processing {source.name}. {rows} rows found.</div>
+    <div>
+      Processing {source.name}...
+      {processed && <Export data={processed} />}
+    </div>
   )
 }

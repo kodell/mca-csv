@@ -16,7 +16,7 @@ function Downloader() {
           <Parser source={inputEl.current.files[0]} />
         ): (
           <button onClick={() => setRunning(true)}>
-            Start Downloading Source CSV
+            Start Processing Source CSV
           </button>
         )}
       </label>
