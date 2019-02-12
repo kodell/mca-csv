@@ -5,7 +5,7 @@ import convertData, {massageItem} from '../convertData'
 const RAW_DATA = {
   InternalId: 'SKUNumber',
   ImageFileName: 'img.png',
-  Title: 'Test Title',
+  Title: 'Test Title DOWNLOAD',
   HTMLDescription: 'Test <em>Desc</em>',
   SuggestedRetailPrice: 2,
   Videos: 'test.wmv, baz.wmv'
@@ -22,7 +22,8 @@ describe('Data Converter', function() {
   describe('processes raw data fields', function() {
     const converted = convertData(massageItem(RAW_DATA))
     it('should leave Title as-is', function() {
-      assert.equal(converted.Title, RAW_DATA.Title);
+      assert.include(converted.Title, 'Test Title');
+      assert.include(converted.Title, '(Download)', 'but replace DOWNLOAD');
     });
     it('should rename InternalId', function() {
       assert.equal(converted.SKU, RAW_DATA.InternalId);

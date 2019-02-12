@@ -39,15 +39,8 @@ const DIGITAL_FIELDS = {
 }
 
 export default function convertData(item) {
+  // Replace the DOWNLOAD string in Title
   const Title = item.Title.replace('DOWNLOAD', '(Download)')
-  // Add Videos to Description
-  let videos = '';
-  if (item.Videos) {
-    const vidArr = item.Videos.split(', ').map((vidFile) => {
-      return URL + vidFile.replace(REG, '$1.mp4')
-    })
-    videos = vidArr.join('\n<br>') + '\n<br><br>'
-  }
 
   // Build Categories list
   const categories = [];
@@ -64,10 +57,20 @@ export default function convertData(item) {
     }
   }
 
+  // Add Videos to Description
+  let videos = '';
+  if (item.Videos) {
+    const vidArr = item.Videos.split(', ').map((vidFile) => {
+      return URL + vidFile.replace(REG, '$1.mp4')
+    })
+    videos = vidArr.join('\n<br>') + '\n<br><br>'
+  }
+
   const digitalFields = item._digital ? DIGITAL_FIELDS : {};
 
-  const outFields = pick(item, ['SKU', 'Title', 'Images', 'Price'])
+  const outFields = pick(item, ['SKU', 'Images', 'Price'])
   return {
+    Title,
     ...outFields,
     Categories: categories.join(', '),
     Description: videos + item.Description,
