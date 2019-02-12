@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-import { massagePhysicalItem } from './convertData'
+import { massageItem } from './convertData'
 import Export from './Export'
 
 export default function Parser({ source, cancel }) {
@@ -10,17 +10,15 @@ export default function Parser({ source, cancel }) {
   }
 
   // Kick off the source download with Papa
-  const [rows, setRows] = useState(0);
   const [processed, setProcessed] = useState(null);
 
   useEffect(() => {
-    let rows = 0;
     Papa.parse(source, {
       header: true,
       complete: function (results) {
         setProcessed({
           ...results,
-          data: results.data.map(massagePhysicalItem)
+          data: results.data.map(massageItem)
         })
       }
     })

@@ -1,20 +1,30 @@
+import pick from 'object.pick'
+
 const REG = /(\S+)\.wmv/
 const URL = 'http://www.murphysmagicsupplies.com/video/clips_mp4fs/'
 
-export function massagePhysicalItem(item) {
-  if (item.InternalId) {
-    return item; // already a digital item
-  } else {
-    return {
-      ...item,
-      InternalId: item['Product Key'],
-      HTMLDescription: item['Detailed Description'],
-      ImageFileName: item['Image URL'],
-      DateAdded: item['Date Added'],
-      SuggestedRetailPrice: item['MSRP'],
-      _physical: true
+const FIELD_MAP = {
+  SKU: ['InternalId', 'Product Key'],
+  Description: ['HTMLDescription', 'Detailed Description'],
+  Images: ['ImageFileName', 'Image URL'],
+  DateAdded: ['DateAdded', 'Date Added'],
+  Price: ['SuggestedRetailPrice', 'MSRP'],
+}
+
+export function massageItem(item) {
+  const output = {
+    ...item,
+    _digital: !!item.InternalId // digital items are labelled with InternalId SKU
+  };
+  for (const field in FIELD_MAP) {
+    const sourceFields = FIELD_MAP[field]
+    const fieldPresent = sourceFields.find( (f) => item.hasOwnProperty(f) )
+    if (fieldPresent) {
+      output[field] = item[fieldPresent]
+      delete output[fieldPresent]
     }
   }
+  return output;
 }
 
 const CATEGORIES = {
@@ -38,14 +48,14 @@ export default function convertData(item) {
     })
     videos = vidArr.join('\n<br>') + '\n<br><br>'
   }
-  const Description = videos + item.HTMLDescription;
+
   // Build Categories list
   const categories = [];
   if (Title.startsWith('The Vault')) {
     categories.push('The Vault Videos')
   } else if (Title.startsWith('At The Table')) {
     categories.push('At the Table Lectures')
-  } else if (!item._physical) {
+  } else if (item._digital) {
     categories.push('Instant Downloads')
   }
   for (const cat in CATEGORIES) {
@@ -54,15 +64,13 @@ export default function convertData(item) {
     }
   }
 
-  const digitalFields = item._physical ? {} : DIGITAL_FIELDS;
+  const digitalFields = item._digital ? DIGITAL_FIELDS : {};
 
+  const outFields = pick(item, ['SKU', 'Title', 'Images', 'Price'])
   return {
-    SKU: item.InternalId,
-    Description,
-    Title,
-    Images: item.ImageFileName,
     Categories: categories.join(', '),
-    Price: item.SuggestedRetailPrice,
+    Description: videos + item.Description,
+    ...outFields,
     ...digitalFields
   }
 }

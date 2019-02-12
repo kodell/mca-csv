@@ -1,19 +1,26 @@
 import { assert } from 'chai'
 
-import convertData from '../convertData'
+import convertData, {massageItem} from '../convertData'
 
 const RAW_DATA = {
   InternalId: 'SKUNumber',
-  ImageFileName: 'img.src',
+  ImageFileName: 'img.png',
   Title: 'Test Title',
   HTMLDescription: 'Test <em>Desc</em>',
   SuggestedRetailPrice: 2,
   Videos: 'test.wmv, baz.wmv'
 }
+const RAW_PHYSICAL = {
+  'Product Key': 'SKUTest',
+  'Detailed Description': 'Test Detailed',
+  'Image URL': 'img.jpg',
+  'Date Added': '1/2/3',
+  'MSRP': 3
+}
 
 describe('Data Converter', function() {
   describe('processes raw data fields', function() {
-    const converted = convertData(RAW_DATA)
+    const converted = convertData(massageItem(RAW_DATA))
     it('should leave Title as-is', function() {
       assert.equal(converted.Title, RAW_DATA.Title);
     });
@@ -43,4 +50,17 @@ describe('Data Converter', function() {
       assert.equal(converted['Meta: _no_shipping_required'], 'yes')
     })
   });
+  
+  describe('converts physical items', function() {
+    const converted = massageItem(RAW_PHYSICAL)
+    it('should rename fields', function() {
+      assert.equal(converted.SKU, RAW_PHYSICAL['Product Key'], 'Product Key')
+      assert.equal(converted.Description, RAW_PHYSICAL['Detailed Description'], 'Detailed Description')
+      assert.equal(converted.Images, RAW_PHYSICAL['Image URL'], 'Image URL')
+      assert.equal(converted.DateAdded, RAW_PHYSICAL['Date Added'], 'Date Added')
+    })
+    it('should mark it as not _digital', function() {
+      assert.isFalse(converted._digital);
+    })
+  })
 });
