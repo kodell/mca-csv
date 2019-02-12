@@ -68,9 +68,9 @@ export default function convertData(item) {
 
   const outFields = pick(item, ['SKU', 'Title', 'Images', 'Price'])
   return {
+    ...outFields,
     Categories: categories.join(', '),
     Description: videos + item.Description,
-    ...outFields,
     ...digitalFields
   }
 }
