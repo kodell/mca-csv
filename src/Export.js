@@ -54,7 +54,12 @@ export default function Export({ data }) {
           <button onClick={() => setOk(true)}>Done</button>
           <ol>{items}</ol>
         </div>
-      ): <a href={exportData} download="MCAImport.csv">Complete - Download Formatted CSV</a>}
+      ): (
+        <a href={exportData}
+          download={`MCAImport.${moment().format('YYYY-MM-DD')}.csv`}>
+            Complete - Download Formatted CSV
+        </a>
+      )}
     </section>
   )
 }

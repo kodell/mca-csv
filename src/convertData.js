@@ -6,12 +6,13 @@ export function massagePhysicalItem(item) {
     return item; // already a digital item
   } else {
     return {
+      ...item,
       InternalId: item['Product Key'],
       HTMLDescription: item['Detailed Description'],
       ImageFileName: item['Image URL'],
       DateAdded: item['Date Added'],
       SuggestedRetailPrice: item['MSRP'],
-      Title: item.Title
+      _physical: true
     }
   }
 }
@@ -22,8 +23,14 @@ const CATEGORIES = {
   'Money Magic': 'Money Magic',
   'Street Performer': 'Street Magic'
 }
+const DIGITAL_FIELDS = {
+  Type: 'simple, virtual',
+  'Meta: _no_shipping_required': 'yes'
+}
 
 export default function convertData(item) {
+  const Title = item.Title.replace('DOWNLOAD', '(Download)')
+  // Add Videos to Description
   let videos = '';
   if (item.Videos) {
     const vidArr = item.Videos.split(', ').map((vidFile) => {
@@ -32,13 +39,13 @@ export default function convertData(item) {
     videos = vidArr.join('\n<br>') + '\n<br><br>'
   }
   const Description = videos + item.HTMLDescription;
-  const Title = item.Title.replace('DOWNLOAD', '(Download)')
+  // Build Categories list
   const categories = [];
   if (Title.startsWith('The Vault')) {
     categories.push('The Vault Videos')
   } else if (Title.startsWith('At The Table')) {
     categories.push('At the Table Lectures')
-  } else {
+  } else if (!item._physical) {
     categories.push('Instant Downloads')
   }
   for (const cat in CATEGORIES) {
@@ -47,6 +54,8 @@ export default function convertData(item) {
     }
   }
 
+  const digitalFields = item._physical ? {} : DIGITAL_FIELDS;
+
   return {
     SKU: item.InternalId,
     Description,
@@ -54,7 +63,6 @@ export default function convertData(item) {
     Images: item.ImageFileName,
     Categories: categories.join(', '),
     Price: item.SuggestedRetailPrice,
-    Type: 'simple, virtual',
-    'Meta: _no_shipping_required': 'yes'
+    ...digitalFields
   }
 }
