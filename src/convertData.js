@@ -1,6 +1,21 @@
 const REG = /(\S+)\.wmv/
 const URL = 'http://www.murphysmagicsupplies.com/video/clips_mp4fs/'
 
+export function massagePhysicalItem(item) {
+  if (item.InternalId) {
+    return item; // already a digital item
+  } else {
+    return {
+      InternalId: item['Product Key'],
+      HTMLDescription: item['Detailed Description'],
+      ImageFileName: item['Image URL'],
+      DateAdded: item['Date Added'],
+      SuggestedRetailPrice: item['MSRP'],
+      Title: item.Title
+    }
+  }
+}
+
 const CATEGORIES = {
   'Card Magic and Trick Decks': 'Card Magic',
   'Close Up Performer': 'Close-Up Magic',
