@@ -20,8 +20,8 @@ export function massageItem(item) {
     const sourceFields = FIELD_MAP[field]
     const fieldPresent = sourceFields.find( (f) => item.hasOwnProperty(f) )
     if (fieldPresent) {
-      output[field] = item[fieldPresent]
       delete output[fieldPresent]
+      output[field] = item[fieldPresent]
     }
   }
   return output;
