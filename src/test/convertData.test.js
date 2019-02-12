@@ -50,7 +50,7 @@ describe('Data Converter', function() {
       assert.equal(converted['Meta: _no_shipping_required'], 'yes')
     })
   });
-  
+
   describe('converts physical items', function() {
     const converted = massageItem(RAW_PHYSICAL)
     it('should rename fields', function() {
@@ -61,6 +61,7 @@ describe('Data Converter', function() {
     })
     it('should mark it as not _digital', function() {
       assert.isFalse(converted._digital);
+      assert.isUndefined(converted.Type);
     })
   })
 });

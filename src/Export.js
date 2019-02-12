@@ -13,7 +13,7 @@ export default function Export({ data }) {
   const startMoment = startDate && moment(startDate)
   const titleRegEx = titleContains && new RegExp(titleContains, 'i');
   const filtered = data.data.filter((item) => {
-    if (!item.InternalId || !item.Title) {
+    if (!item.SKU || !item.Title) {
       return false; // products must have a SKU + Title to be imported
     }
     if (startMoment && startMoment.diff(item.DateAdded) > 0) {
