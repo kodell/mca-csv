@@ -9,7 +9,7 @@ function Downloader() {
   return (
     <div>
       <label>
-        Source CSV:
+        Source CSV from Murphy's:
         <input type="file" disabled={running} ref={inputEl} />
         <hr />
         {running ? (
