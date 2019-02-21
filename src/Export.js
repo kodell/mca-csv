@@ -38,7 +38,7 @@ export default function Export({ data }) {
   return (
     <section>
       Total rows found: {data.data.length}
-      <h2>Apply filters as criteria for export:</h2>
+      <h2>Apply filters as criteria for your import:</h2>
       <label>
         Start Date:
         <input type="date" onChange={({ target }) => setDate(target.value)} />
@@ -51,14 +51,14 @@ export default function Export({ data }) {
       <hr />
       {!ok ? (
         <div>
-          {filtered.length} items match these criteria and are ready for export:<br /><br />
+          {filtered.length} items match these criteria:<br /><br />
           <button onClick={() => setOk(true)}>Done applying filters</button>
           <ol>{items}</ol>
         </div>
       ): (
         <a href={exportData}
           download={`MCAImport.${moment().format('YYYY-MM-DD')}.csv`}>
-            Ready - click to Download Formatted CSV for Woocommerce
+            Ready - click to Download Formatted CSV for import to Woocommerce
         </a>
       )}
     </section>
