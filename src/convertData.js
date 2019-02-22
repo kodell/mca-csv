@@ -52,18 +52,20 @@ export default function convertData(item) {
     categories.push('Instant Downloads')
   }
   for (const cat in CATEGORIES) {
-    if (item[cat]) {
+    if (item[cat] === 'Yes' || item[cat] === 'yes') {
       categories.push(CATEGORIES[cat])
     }
   }
 
   // Add Videos to Description
-  let videos = '';
-  if (item.Videos) {
+  let videos = item.Videos || item["Video Files"];
+  if (videos) {
     const vidArr = item.Videos.split(', ').map((vidFile) => {
       return URL + vidFile.replace(REG, '$1.mp4')
     })
     videos = vidArr.join('\n<br>') + '\n<br><br>'
+  } else {
+    videos = "";
   }
 
   const digitalFields = item._digital ? DIGITAL_FIELDS : {};
