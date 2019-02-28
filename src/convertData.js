@@ -60,7 +60,7 @@ export default function convertData(item) {
   // Add Videos to Description
   let videos = item.Videos || item["Video Files"];
   if (videos) {
-    const vidArr = item.Videos.split(', ').map((vidFile) => {
+    const vidArr = videos.split(', ').map((vidFile) => {
       return URL + vidFile.replace(REG, '$1.mp4')
     })
     videos = vidArr.join('\n<br>') + '\n<br><br>'
