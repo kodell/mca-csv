@@ -9,6 +9,7 @@ const FIELD_MAP = {
   Images: ['ImageFileName', 'Image URL'],
   DateAdded: ['DateAdded', 'Date Added'],
   Price: ['SuggestedRetailPrice', 'MSRP'],
+  COG: ['Wholesale', 'WholesalePrice'],
 }
 
 export function massageItem(item) {
@@ -70,7 +71,7 @@ export default function convertData(item) {
 
   const digitalFields = item._digital ? DIGITAL_FIELDS : {};
 
-  const outFields = pick(item, ['SKU', 'Images', 'Price'])
+  const outFields = pick(item, ['SKU', 'Images', 'Price', 'COG'])
   return {
     Title,
     ...outFields,
